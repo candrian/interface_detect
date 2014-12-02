@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #Ip used with ping command to test if the interface is up & working
-PING_IP="10.80.159.1"
+PING_IP="0.0.0.0"
 #IP & Netmask used for testing interface temp/test configuration
-TEST_IP="10.80.159.11"
-NETMASK="255.255.255.0"
+TEST_IP="0.0.0.0"
+NETMASK="255.255.255.255"
 
 #Check if any argument is given
 if [ $# -eq 0 ]; then
@@ -19,11 +19,11 @@ if [[ $1 != *[[:digit:]]* ]]; then
 fi
 
 #Clear /etc/network/interfaces & restart networking
-mv /etc/network/interfaces /etc/network/interfaces_temp
-touch /etc/network/interfaces
-echo auto lo > /etc/network/interfaces
-echo iface lo inet loopback >> /etc/network/interfaces
-/etc/init.d/networking restart
+#mv /etc/network/interfaces /etc/network/interfaces_temp
+#touch /etc/network/interfaces
+#echo auto lo > /etc/network/interfaces
+#echo iface lo inet loopback >> /etc/network/interfaces
+#/etc/init.d/networking restart
 
 #Move interfaces number
 INTERFACES_NUMBER=$1
@@ -64,6 +64,6 @@ echo "*--------------------------------*"
 ifconfig
 
 #Restore /etc/network/interfaces & restart networking
-rm -rf /etc/network/interfaces
-mv /etc/network/interfaces_temp /etc/network/interfaces
-/etc/init.d/networking restart
+#rm -rf /etc/network/interfaces
+#mv /etc/network/interfaces_temp /etc/network/interfaces
+#/etc/init.d/networking restart

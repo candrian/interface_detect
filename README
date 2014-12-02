@@ -1,11 +1,11 @@
-detect_interface is a script to help you detect which interface matches which physical port
+interface_detect is a script to help you detect which interface matches which physical port
 
 How to use.
 
-1) Disconnect all ethernet cables connected to any ethernet physical port except the one on NetManagement port.
+1) Disconnect all ethernet cables connected to any ethernet physical port 
 2) Run "sudo su" to take root privileges 
 2) Make sure the /etc/network/interfaces doesn't contain any configurations for any ethernet interface except loop back. If it is not empty please make a
-safe copy and create a new one with no configurations. Reboot the server.
+safe copy and create a new one with no configurations. Reboot the server or restart interfaces. 
 3) Run ifconfig -a to show all the available interfaces and note down the higher interface number. 
 4) Connect a network cable connected to the network to any physical port you want to find out the interface and run the script with first argument the number 
 of the higher interface -1. For example if "ifconfig -a" returns "eth0, eth1, eth3, eth12" you run the script ./detect_interface 11
