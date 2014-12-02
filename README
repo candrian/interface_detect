@@ -1,4 +1,4 @@
-interface_detect is a script to help you detect which interface matches which physical port
+interface_detect is a script to help you detect which ethernet interface matches which physical port
 
 How to use.
 
