@@ -1,0 +1,69 @@
+#!/bin/bash
+
+#Ip used with ping command to test if the interface is up & working
+PING_IP="10.80.159.1"
+#IP & Netmask used for testing interface temp/test configuration
+TEST_IP="10.80.159.11"
+NETMASK="255.255.255.0"
+
+#Check if any argument is given
+if [ $# -eq 0 ]; then
+        echo Please give number of interfaces e.g detect_interface 2
+        exit 1
+fi
+
+#Check if argument 1 is numeric
+if [[ $1 != *[[:digit:]]* ]]; then
+        echo Please give a number
+        exit 1
+fi
+
+#Clear /etc/network/interfaces & restart networking
+mv /etc/network/interfaces /etc/network/interfaces_temp
+touch /etc/network/interfaces
+echo auto lo > /etc/network/interfaces
+echo iface lo inet loopback >> /etc/network/interfaces
+/etc/init.d/networking restart
+
+#Move interfaces number
+INTERFACES_NUMBER=$1
+
+#Detect in which ethernet interface is the LAN cable connected to.
+detect_interface(){
+        INTERFACES_NUMBER=$1
+        for (( i=0; i<=$INTERFACES_NUMBER-1; i++))
+        do
+                #Bring interface up
+                ifconfig eth"$i" "$TEST_IP" netmask "$NETMASK"
+                #Test interface using ping
+                if ping -c1 $PING_IP &>/dev/null ; then
+                        echo "*----------------------*---------*"
+                        echo "|  Connected interface: | eth"$i"   |"
+                        echo "*----------------------*---------*"
+                        echo "|  Mac Address:                  |"
+                        echo -n "|  "
+                        ifconfig eth$i | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}'
+                        echo "*--------------------------------*"
+                        ifconfig eth"$i" down
+                        break
+                fi
+                ifconfig eth"$i" down
+        done
+        if [[ "$i" -gt "$INTERFACES_NUMBER-1" ]] ; then
+                echo
+                echo Oh! Something went wrong. No interface found :\(
+                echo
+        fi
+}
+
+detect_interface $INTERFACES_NUMBER
+
+echo "*--------------------------------*"
+echo "|           Ifconfig             |"
+echo "*--------------------------------*"
+ifconfig
+
+#Restore /etc/network/interfaces & restart networking
+rm -rf /etc/network/interfaces
+mv /etc/network/interfaces_temp /etc/network/interfaces
+/etc/init.d/networking restart
